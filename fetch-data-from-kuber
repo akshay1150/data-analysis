@@ -1,0 +1,34 @@
+import pandas as pd
+import requests
+r=requests.get("http://localhost:8888/api/v1/namespaces/kube-system/pods")
+data= r.json()
+a=[]
+b=[]
+c=[]
+d=[]
+for var in data['items']:
+#   print(type(var))
+#   print(var['metadata']['name'])
+    a.append(var['metadata']['name'])
+    b.append(var['status']['podIP'])
+#    print(var['status']['containerStatuses'][0]['containerID'])
+#    print(var['status']['containerStatuses'][0]['name'])
+#    print(var['status']['containerStatuses'][0]['state']['running' | 'terminated'])
+    x=var['status']['containerStatuses'][0]['state']
+    if 'running' in x:
+        c.append(x['running']['startedAt'])
+
+#    elif 'terminated' in x:
+#       print(x['terminated']['startedAt'])
+#       c.append(x['terminated']['startedAt'])
+list=pd.DataFrame({'name':a})
+list1=pd.DataFrame({'podIP':b})
+list2=pd.DataFrame({'started':c})
+#print(list2)
+#print(list)
+new=pd.concat([list,list1,list2],axis=1).to_string(index=False)
+print(new)
+#      print (x['running']['startedAt'])
+#    print(type(var['status']['containerStatuses'][0]['state']))
+#list=pd.DataFrame({'name':a,'podIP':b,'started':c}).to_string(index=False)
+#print(list)
